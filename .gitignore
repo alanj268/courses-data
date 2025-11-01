@@ -1,1 +1,6 @@
 node_modules/
+
+courses-data.json
+lunr-index.json
+lunr-index.msgpack
+lunr-index.msgpack.zip

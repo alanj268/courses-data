@@ -3,29 +3,15 @@ let searchIndex = null;
 
 async function initializeSearch() {
   try {
-    const response = await fetch('courses.json');
-    const data = await response.json();
+    const [indexResponse, dataResponse] = await Promise.all([
+      fetch('lunr-index.json'),
+      fetch('courses-data.json')
+    ]);
     
-    coursesData = Object.values(data).map(course => ({
-      id: course.courseID,
-      name: course.name,
-      desc: course.desc,
-      department: course.department,
-      units: course.units,
-      prereqString: course.prereqString || 'None'
-    }));
+    const serializedIndex = await indexResponse.json();
+    coursesData = await dataResponse.json();
     
-    searchIndex = lunr(function () {
-      this.ref('id');
-      this.field('id', { boost: 10 });
-      this.field('name', { boost: 5 });
-      this.field('department', { boost: 2 });
-      this.field('desc');
-      
-      coursesData.forEach(course => {
-        this.add(course);
-      });
-    });
+    searchIndex = lunr.Index.load(serializedIndex);
     
     return true;
   } catch (error) {

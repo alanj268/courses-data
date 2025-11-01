@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "build": "node build-index.js",
     "start": "bun run server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/ScottyLabs/courses-data/issues"
   },
-  "homepage": "https://github.com/ScottyLabs/courses-data#readme"
+  "homepage": "https://github.com/ScottyLabs/courses-data#readme",
+  "dependencies": {
+    "lunr": "^2.3.9"
+  }
 }
