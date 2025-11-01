@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <input type="text" id="query" />
+    <div id="output"></div>
+
+    <script>
+      const queryInput = document.querySelector("#query");
+      const output = document.querySelector("#output");
+
+      queryInput.addEventListener("input", async (event) => {
+        const query = event.target.value.trim();
+        
+        if (!query) {
+          output.innerHTML = "";
+          return;
+        }
+
+        try {
+          const response = await fetch('/search', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query })
+          });
+
+          const courses = await response.json();
+          
+          output.innerHTML = courses.map(course => `
+            <div class="course">
+              <div class="course-header">
+                <span class="course-id">${course.id}</span>
+                <span class="course-units">${course.units} units</span>
+              </div>
+              <div class="course-name">${course.name}</div>
+              <div class="course-dept">${course.department}</div>
+              <div class="course-desc">${course.desc}</div>
+              <div class="course-prereqs">Prerequisites: ${course.prereqString}</div>
+            </div>
+          `).join('');
+        } catch (error) {
+          console.error('Search error:', error);
+          output.innerHTML = '<p>Error performing search</p>';
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "An implementation of a search engine using Lunr.js which is compressed and loaded onto the client side, for CMUCourses Data Layer",
   "main": "index.js",
+  "type": "module",
   "scripts": {
+    "start": "bun run server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
