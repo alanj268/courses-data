@@ -9,58 +9,23 @@ const server = Bun.serve({
     }
 
     try {
-      if (filepath === "/index.html" || filepath.endsWith(".json")) {
-        const file = Bun.file("." + filepath);
-        const exists = await file.exists();
-        
-        if (!exists) {
-          return new Response("Not Found", { status: 404 });
-        }
-
-        let contentType = "text/plain";
-        if (filepath.endsWith(".html")) contentType = "text/html";
-        else if (filepath.endsWith(".json")) contentType = "application/json";
-
-        return new Response(file, {
-          headers: {
-            "Content-Type": contentType,
-          },
-        });
-      }
+      const file = Bun.file("." + filepath);
       
-      if (filepath === "/search" && req.method === "POST") {
-        const { query } = await req.json();
-        
-        const coursesFile = Bun.file("./courses.json");
-        const data = await coursesFile.json();
-        
-        const coursesData = Object.values(data).map(course => ({
-          id: course.courseID,
-          name: course.name,
-          desc: course.desc,
-          department: course.department,
-          units: course.units,
-          prereqString: course.prereqString || 'None'
-        }));
-        
-        const results = coursesData.filter(course => {
-          const searchTerm = query.toLowerCase();
-          return (
-            course.id.toLowerCase().includes(searchTerm) ||
-            course.name.toLowerCase().includes(searchTerm) ||
-            course.desc.toLowerCase().includes(searchTerm) ||
-            course.department.toLowerCase().includes(searchTerm)
-          );
-        }).slice(0, 10);
-        
-        return new Response(JSON.stringify(results), {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+      const exists = await file.exists();
+      if (!exists) {
+        return new Response("Not Found", { status: 404 });
       }
-      
-      return new Response("Not Found", { status: 404 });
+
+      let contentType = "text/plain";
+      if (filepath.endsWith(".html")) contentType = "text/html";
+      else if (filepath.endsWith(".js")) contentType = "application/javascript";
+      else if (filepath.endsWith(".json")) contentType = "application/json";
+
+      return new Response(file, {
+        headers: {
+          "Content-Type": contentType,
+        },
+      });
     } catch (error) {
       console.error(`Error serving ${filepath}:`, error);
       return new Response("Internal Server Error", { status: 500 });
