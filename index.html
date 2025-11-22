@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <input type="text" id="query" />
+    <div id="output"></div>
+
+    <script src="https://unpkg.com/lunr/lunr.js"></script>
+    <script type="module">
+      import { initializeSearch, searchCourses } from './search.js';
+
+      const queryInput = document.querySelector("#query");
+      const output = document.querySelector("#output");
+
+      const initialized = await initializeSearch();
+      if (initialized) {
+        queryInput.disabled = false;
+      }
+
+      queryInput.addEventListener("input", (event) => {
+        const query = event.target.value.trim();
+        
+        if (!query) {
+          output.innerHTML = "";
+          return;
+        }
+
+        const results = searchCourses(query);
+        
+        if (results.length === 0) {
+          output.innerHTML = "";
+          return;
+        }
+
+        output.innerHTML = results.map(course => `
+          <div class="course">
+            <div class="course-header">
+              <span class="course-id">${course.id}</span>
+              <span class="course-units">${course.units} units</span>
+            </div>
+            <div class="course-name">${course.name}</div>
+            <div class="course-dept">${course.department}</div>
+            <div class="course-desc">${course.desc}</div>
+            <div class="course-prereqs">Prerequisites: ${course.prereqString}</div>
+          </div>
+        `).join('');
+      });
+    </script>
+  </body>
+</html>
