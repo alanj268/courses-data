@@ -1,4 +1,4 @@
-// Build script to pre-generate Lunr search index
+// Generated build script to pre-generate Lunr search index
 // Run with: npm run build
 
 import { createRequire } from 'module';
@@ -45,7 +45,7 @@ const serializedDocuments = JSON.stringify(documents);
 fs.writeFileSync('./lunr-index.json', serializedIndex);
 fs.writeFileSync('./courses-data.json', serializedDocuments);
 
-console.log('✅ Index built successfully!');
+console.log('Index built successfully!');
 console.log(`   - lunr-index.json: ${(serializedIndex.length / 1024).toFixed(2)} KB`);
 console.log(`   - courses-data.json: ${(serializedDocuments.length / 1024).toFixed(2)} KB`);
 

@@ -1,3 +1,5 @@
+import { gzipSync } from 'zlib';
+
 const server = Bun.serve({
   port: 8000,
   async fetch(req) {
@@ -20,6 +22,22 @@ const server = Bun.serve({
       if (filepath.endsWith(".html")) contentType = "text/html";
       else if (filepath.endsWith(".js")) contentType = "application/javascript";
       else if (filepath.endsWith(".json")) contentType = "application/json";
+
+      const acceptEncoding = req.headers.get("accept-encoding") || "";
+      const shouldCompress = acceptEncoding.includes("gzip") && 
+                            (filepath.endsWith(".json") || filepath.endsWith(".js") || filepath.endsWith(".html"));
+
+      if (shouldCompress) {
+        const buffer = await file.arrayBuffer();
+        const compressed = gzipSync(new Uint8Array(buffer));
+        
+        return new Response(compressed, {
+          headers: {
+            "Content-Type": contentType,
+            "Content-Encoding": "gzip",
+          },
+        });
+      }
 
       return new Response(file, {
         headers: {
