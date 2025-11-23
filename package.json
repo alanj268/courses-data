@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/ScottyLabs/courses-data#readme",
   "dependencies": {
+    "@types/lunr": "^2.3.7",
     "lunr": "^2.3.9"
   }
 }
